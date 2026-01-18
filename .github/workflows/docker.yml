@@ -4,7 +4,7 @@ on:
   push:
     tags:
       - "v*" # 主项目版本
-      - "mcp-v*" # MCP 版本
+      - "mcp-v*" # MCP 版本1
   workflow_dispatch:
     inputs:
       image:
