@@ -1,0 +1,1194 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TrendRadar 配置编辑器</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .navbar-brand {
+            font-weight: bold;
+        }
+        .card {
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .nav-tabs .nav-link.active {
+            background-color: #0d6efd;
+            color: white;
+        }
+        .form-control, .form-select {
+            border-radius: 8px;
+        }
+        .btn-primary {
+            border-radius: 8px;
+        }
+        .section-title {
+            border-bottom: 2px solid #dee2e6;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+            color: #495057;
+        }
+        .save-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+        .config-section {
+            display: none;
+        }
+        .active-section {
+            display: block;
+        }
+        .alert-fixed {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 2000;
+            min-width: 300px;
+        }
+        .editor-container {
+            height: 400px;
+            overflow-y: auto;
+            border: 1px solid #ced4da;
+            border-radius: 8px;
+            padding: 10px;
+            background-color: #fff;
+        }
+        .editor-header {
+            font-weight: bold;
+            margin-bottom: 10px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid #eee;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="#"><i class="fas fa-sliders-h"></i> TrendRadar 配置编辑器</a>
+        </div>
+    </nav>
+
+    <div class="container mt-4 mb-5">
+        <ul class="nav nav-tabs" id="configTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="general-tab" data-bs-toggle="tab" data-bs-target="#general" type="button" role="tab">基础设置</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="platforms-tab" data-bs-toggle="tab" data-bs-target="#platforms" type="button" role="tab">数据源 - 热榜平台</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="rss-tab" data-bs-toggle="tab" data-bs-target="#rss" type="button" role="tab">数据源 - RSS</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="report-tab" data-bs-toggle="tab" data-bs-target="#report" type="button" role="tab">报告模式</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="display-tab" data-bs-toggle="tab" data-bs-target="#display" type="button" role="tab">推送内容控制</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="notification-tab" data-bs-toggle="tab" data-bs-target="#notification" type="button" role="tab">推送通知</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="storage-tab" data-bs-toggle="tab" data-bs-target="#storage" type="button" role="tab">存储配置</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="ai-tab" data-bs-toggle="tab" data-bs-target="#ai" type="button" role="tab">AI 配置</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="files-tab" data-bs-toggle="tab" data-bs-target="#files" type="button" role="tab">文本文件编辑</button>
+            </li>
+        </ul>
+
+        <div class="tab-content p-4 bg-white rounded shadow-sm mt-3" id="configTabContent">
+            <!-- 基础设置 -->
+            <div class="tab-pane fade show active" id="general" role="tabpanel">
+                <h4 class="section-title"><i class="fas fa-cog"></i> 基础设置</h4>
+                
+                <div class="mb-3">
+                    <label class="form-label">时区配置</label>
+                    <select class="form-select" id="timezone">
+                        <option value="Asia/Shanghai">Asia/Shanghai (北京时间 UTC+8)</option>
+                        <option value="America/New_York">America/New_York (美东时间 UTC-5/-4)</option>
+                        <option value="Europe/London">Europe/London (伦敦时间 UTC+0/+1)</option>
+                        <option value="Asia/Tokyo">Asia/Tokyo (东京时间 UTC+9)</option>
+                        <option value="UTC">UTC (协调世界时)</option>
+                    </select>
+                </div>
+                
+                <div class="mb-3 form-check">
+                    <input type="checkbox" class="form-check-input" id="showVersionUpdate">
+                    <label class="form-check-label" for="showVersionUpdate">显示版本更新提示</label>
+                </div>
+            </div>
+
+            <!-- 数据源 - 热榜平台 -->
+            <div class="tab-pane fade" id="platforms" role="tabpanel">
+                <h4 class="section-title"><i class="fas fa-globe-asia"></i> 数据源 - 热榜平台</h4>
+                
+                <div class="mb-3 form-check">
+                    <input type="checkbox" class="form-check-input" id="platformsEnabled">
+                    <label class="form-check-label" for="platformsEnabled">启用热榜平台抓取</label>
+                </div>
+                
+                <div id="platformList">
+                    <!-- 动态加载平台列表 -->
+                </div>
+            </div>
+
+            <!-- 数据源 - RSS -->
+            <div class="tab-pane fade" id="rss" role="tabpanel">
+                <h4 class="section-title"><i class="fas fa-rss"></i> 数据源 - RSS</h4>
+                
+                <div class="mb-3 form-check">
+                    <input type="checkbox" class="form-check-input" id="rssEnabled">
+                    <label class="form-check-label" for="rssEnabled">启用 RSS 抓取</label>
+                </div>
+                
+                <h5 class="mt-4">RSS 文章新鲜度过滤配置</h5>
+                <div class="mb-3 form-check">
+                    <input type="checkbox" class="form-check-input" id="freshnessFilterEnabled">
+                    <label class="form-check-label" for="freshnessFilterEnabled">启用新鲜度过滤</label>
+                </div>
+                
+                <div class="mb-3">
+                    <label class="form-label">最大文章年龄（天）</label>
+                    <input type="number" class="form-control" id="maxAgeDays" min="0">
+                    <div class="form-text">0 表示禁用过滤，推送所有文章；正整数表示只推送 N 天内的文章</div>
+                </div>
+                
+                <h5 class="mt-4">RSS 订阅源</h5>
+                <div id="rssFeedsList">
+                    <!-- 动态加载 RSS 订阅源列表 -->
+                </div>
+            </div>
+
+            <!-- 报告模式 -->
+            <div class="tab-pane fade" id="report" role="tabpanel">
+                <h4 class="section-title"><i class="fas fa-chart-bar"></i> 报告模式</h4>
+                
+                <div class="mb-3">
+                    <label class="form-label">报告模式</label>
+                    <select class="form-select" id="reportMode">
+                        <option value="daily">daily (当日汇总模式)</option>
+                        <option value="current">current (当前榜单模式)</option>
+                        <option value="incremental">incremental (增量监控模式)</option>
+                    </select>
+                </div>
+                
+                <div class="mb-3">
+                    <label class="form-label">显示模式</label>
+                    <select class="form-select" id="displayMode">
+                        <option value="keyword">keyword (按关键词分组显示)</option>
+                        <option value="platform">platform (按平台/来源分组显示)</option>
+                    </select>
+                </div>
+                
+                <div class="mb-3 form-check">
+                    <input type="checkbox" class="form-check-input" id="sortByPositionFirst">
+                    <label class="form-check-label" for="sortByPositionFirst">按关键词位置优先排序</label>
+                </div>
+                
+                <div class="mb-3">
+                    <label class="form-label">排名高亮阈值</label>
+                    <input type="number" class="form-control" id="rankThreshold" min="1">
+                </div>
+                
+                <div class="mb-3">
+                    <label class="form-label">每个关键词最大显示数量</label>
+                    <input type="number" class="form-control" id="maxNewsPerKeyword" min="0" placeholder="0 表示不限制">
+                </div>
+            </div>
+
+            <!-- 推送内容控制 -->
+            <div class="tab-pane fade" id="display" role="tabpanel">
+                <h4 class="section-title"><i class="fas fa-display"></i> 推送内容控制</h4>
+                
+                <h5>区域显示顺序</h5>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label">拖拽调整显示顺序</label>
+                        <div class="list-group" id="regionOrderList">
+                            <!-- 动态加载区域顺序列表 -->
+                        </div>
+                    </div>
+                </div>
+                
+                <h5 class="mt-4">推送区域开关</h5>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-3 form-check">
+                            <input type="checkbox" class="form-check-input" id="regionsHotlist">
+                            <label class="form-check-label" for="regionsHotlist">热榜区域</label>
+                        </div>
+                        <div class="mb-3 form-check">
+                            <input type="checkbox" class="form-check-input" id="regionsNewItems">
+                            <label class="form-check-label" for="regionsNewItems">新增热点区域</label>
+                        </div>
+                        <div class="mb-3 form-check">
+                            <input type="checkbox" class="form-check-input" id="regionsRss">
+                            <label class="form-check-label" for="regionsRss">RSS 订阅区域</label>
+                        </div>
+                        <div class="mb-3 form-check">
+                            <input type="checkbox" class="form-check-input" id="regionsStandalone">
+                            <label class="form-check-label" for="regionsStandalone">独立展示区</label>
+                        </div>
+                        <div class="mb-3 form-check">
+                            <input type="checkbox" class="form-check-input" id="regionsAiAnalysis">
+                            <label class="form-check-label" for="regionsAiAnalysis">AI 分析区域</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <h5 class="mt-4">独立展示区配置</h5>
+                <div class="mb-3">
+                    <label class="form-label">热榜平台 ID 列表（用逗号分隔）</label>
+                    <input type="text" class="form-control" id="standalonePlatforms" placeholder="例如: zhihu,weibo">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">RSS 源 ID 列表（用逗号分隔）</label>
+                    <input type="text" class="form-control" id="standaloneRssFeeds" placeholder="例如: hacker-news">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">每个源最多展示条数</label>
+                    <input type="number" class="form-control" id="standaloneMaxItems" min="0" placeholder="0 表示不限制">
+                </div>
+            </div>
+
+            <!-- 推送通知 -->
+            <div class="tab-pane fade" id="notification" role="tabpanel">
+                <h4 class="section-title"><i class="fas fa-bell"></i> 推送通知</h4>
+                
+                <div class="mb-3 form-check">
+                    <input type="checkbox" class="form-check-input" id="notificationEnabled">
+                    <label class="form-check-label" for="notificationEnabled">启用通知功能</label>
+                </div>
+                
+                <h5 class="mt-4">推送时间窗口控制</h5>
+                <div class="mb-3 form-check">
+                    <input type="checkbox" class="form-check-input" id="pushWindowEnabled">
+                    <label class="form-check-label" for="pushWindowEnabled">启用推送时间窗口控制</label>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">开始时间（北京时间）</label>
+                        <input type="time" class="form-control" id="pushWindowStart">
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">结束时间（北京时间）</label>
+                        <input type="time" class="form-control" id="pushWindowEnd">
+                    </div>
+                </div>
+                <div class="mb-3 form-check">
+                    <input type="checkbox" class="form-check-input" id="pushWindowOncePerDay">
+                    <label class="form-check-label" for="pushWindowOncePerDay">窗口内只推送一次</label>
+                </div>
+                
+                <h5 class="mt-4">推送渠道配置</h5>
+                <div class="accordion" id="notificationChannels">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#feishuCollapse">
+                                飞书
+                            </button>
+                        </h2>
+                        <div id="feishuCollapse" class="accordion-collapse collapse show" data-bs-parent="#notificationChannels">
+                            <div class="accordion-body">
+                                <div class="mb-3">
+                                    <label class="form-label">飞书机器人 webhook URL</label>
+                                    <input type="text" class="form-control" id="feishuWebhookUrl">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#dingtalkCollapse">
+                                钉钉
+                            </button>
+                        </h2>
+                        <div id="dingtalkCollapse" class="accordion-collapse collapse" data-bs-parent="#notificationChannels">
+                            <div class="accordion-body">
+                                <div class="mb-3">
+                                    <label class="form-label">钉钉机器人 webhook URL</label>
+                                    <input type="text" class="form-control" id="dingtalkWebhookUrl">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#weworkCollapse">
+                                企业微信
+                            </button>
+                        </h2>
+                        <div id="weworkCollapse" class="accordion-collapse collapse" data-bs-parent="#notificationChannels">
+                            <div class="accordion-body">
+                                <div class="mb-3">
+                                    <label class="form-label">企业微信机器人 webhook URL</label>
+                                    <input type="text" class="form-control" id="weworkWebhookUrl">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">消息类型</label>
+                                    <select class="form-select" id="weworkMsgType">
+                                        <option value="markdown">markdown (群机器人)</option>
+                                        <option value="text">text (个人微信应用)</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#telegramCollapse">
+                                Telegram
+                            </button>
+                        </h2>
+                        <div id="telegramCollapse" class="accordion-collapse collapse" data-bs-parent="#notificationChannels">
+                            <div class="accordion-body">
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Telegram Bot Token</label>
+                                        <input type="text" class="form-control" id="telegramBotToken">
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Telegram Chat ID</label>
+                                        <input type="text" class="form-control" id="telegramChatId">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#emailCollapse">
+                                邮箱
+                            </button>
+                        </h2>
+                        <div id="emailCollapse" class="accordion-collapse collapse" data-bs-parent="#notificationChannels">
+                            <div class="accordion-body">
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">发件人邮箱地址</label>
+                                        <input type="email" class="form-control" id="emailFrom">
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">发件人邮箱密码或授权码</label>
+                                        <input type="password" class="form-control" id="emailPassword">
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">收件人邮箱（多个用逗号分隔）</label>
+                                    <input type="text" class="form-control" id="emailTo" placeholder="user1@example.com,user2@example.com">
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">SMTP 服务器（可选，留空自动识别）</label>
+                                        <input type="text" class="form-control" id="emailSmtpServer">
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">SMTP 端口（可选，留空自动识别）</label>
+                                        <input type="text" class="form-control" id="emailSmtpPort">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#ntfyCollapse">
+                                ntfy
+                            </button>
+                        </h2>
+                        <div id="ntfyCollapse" class="accordion-collapse collapse" data-bs-parent="#notificationChannels">
+                            <div class="accordion-body">
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">ntfy 服务器地址</label>
+                                        <input type="text" class="form-control" id="ntfyServerUrl" value="https://ntfy.sh">
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">ntfy 主题名称</label>
+                                        <input type="text" class="form-control" id="ntfyTopic">
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">ntfy 访问令牌（可选，用于私有主题）</label>
+                                    <input type="text" class="form-control" id="ntfyToken">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#barkCollapse">
+                                Bark
+                            </button>
+                        </h2>
+                        <div id="barkCollapse" class="accordion-collapse collapse" data-bs-parent="#notificationChannels">
+                            <div class="accordion-body">
+                                <div class="mb-3">
+                                    <label class="form-label">Bark 推送 URL</label>
+                                    <input type="text" class="form-control" id="barkUrl" placeholder="格式：https://api.day.app/your_device_key">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#slackCollapse">
+                                Slack
+                            </button>
+                        </h2>
+                        <div id="slackCollapse" class="accordion-collapse collapse" data-bs-parent="#notificationChannels">
+                            <div class="accordion-body">
+                                <div class="mb-3">
+                                    <label class="form-label">Slack Incoming Webhook URL</label>
+                                    <input type="text" class="form-control" id="slackWebhookUrl">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#genericWebhookCollapse">
+                                通用 Webhook
+                            </button>
+                        </h2>
+                        <div id="genericWebhookCollapse" class="accordion-collapse collapse" data-bs-parent="#notificationChannels">
+                            <div class="accordion-body">
+                                <div class="mb-3">
+                                    <label class="form-label">通用 Webhook URL</label>
+                                    <input type="text" class="form-control" id="genericWebhookUrl">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">JSON 模板</label>
+                                    <textarea class="form-control" id="genericWebhookPayloadTemplate" rows="4" placeholder='示例：{"content": "{content}"}'></textarea>
+                                    <div class="form-text">支持 {title} 和 {content} 占位符，留空则使用默认格式</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 存储配置 -->
+            <div class="tab-pane fade" id="storage" role="tabpanel">
+                <h4 class="section-title"><i class="fas fa-database"></i> 存储配置</h4>
+                
+                <div class="mb-3">
+                    <label class="form-label">存储后端</label>
+                    <select class="form-select" id="storageBackend">
+                        <option value="auto">auto (自动选择)</option>
+                        <option value="local">local (本地 SQLite + TXT/HTML 文件)</option>
+                        <option value="remote">remote (远程云存储)</option>
+                    </select>
+                </div>
+                
+                <h5 class="mt-4">数据格式选项</h5>
+                <div class="mb-3 form-check">
+                    <input type="checkbox" class="form-check-input" id="formatsSqlite">
+                    <label class="form-check-label" for="formatsSqlite">SQLite 主存储</label>
+                </div>
+                <div class="mb-3 form-check">
+                    <input type="checkbox" class="form-check-input" id="formatsTxt">
+                    <label class="form-check-label" for="formatsTxt">TXT 快照</label>
+                </div>
+                <div class="mb-3 form-check">
+                    <input type="checkbox" class="form-check-input" id="formatsHtml">
+                    <label class="form-check-label" for="formatsHtml">HTML 报告</label>
+                </div>
+                
+                <h5 class="mt-4">本地存储配置</h5>
+                <div class="mb-3">
+                    <label class="form-label">数据目录</label>
+                    <input type="text" class="form-control" id="localDataDir" value="output">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">保留天数</label>
+                    <input type="number" class="form-control" id="localRetentionDays" min="0" placeholder="0 表示永久保留">
+                </div>
+                
+                <h5 class="mt-4">远程存储配置</h5>
+                <div class="mb-3">
+                    <label class="form-label">保留天数</label>
+                    <input type="number" class="form-control" id="remoteRetentionDays" min="0" placeholder="0 表示永久保留">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">服务端点</label>
+                    <input type="text" class="form-control" id="remoteEndpointUrl" placeholder="例如：https://<account_id>.r2.cloudflarestorage.com">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">存储桶名称</label>
+                    <input type="text" class="form-control" id="remoteBucketName">
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">访问密钥 ID</label>
+                        <input type="text" class="form-control" id="remoteAccessKeyId">
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">访问密钥</label>
+                        <input type="password" class="form-control" id="remoteSecretAccessKey">
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">区域（可选）</label>
+                    <input type="text" class="form-control" id="remoteRegion">
+                </div>
+                
+                <h5 class="mt-4">数据拉取配置</h5>
+                <div class="mb-3 form-check">
+                    <input type="checkbox" class="form-check-input" id="pullEnabled">
+                    <label class="form-check-label" for="pullEnabled">启用启动时自动拉取</label>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">拉取最近天数的数据</label>
+                    <input type="number" class="form-control" id="pullDays" min="1" value="7">
+                </div>
+            </div>
+
+            <!-- AI 配置 -->
+            <div class="tab-pane fade" id="ai" role="tabpanel">
+                <h4 class="section-title"><i class="fas fa-brain"></i> AI 配置</h4>
+                
+                <h5>AI 提供商配置</h5>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">AI 提供商</label>
+                        <select class="form-select" id="aiProvider">
+                            <option value="deepseek">deepseek</option>
+                            <option value="openai">openai</option>
+                            <option value="gemini">gemini</option>
+                            <option value="custom">custom (自定义)</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">API Key</label>
+                        <input type="password" class="form-control" id="aiApiKey">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">模型名称</label>
+                        <input type="text" class="form-control" id="aiModel" value="deepseek-chat">
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">完整 API 地址（可选）</label>
+                        <input type="text" class="form-control" id="aiBaseUrl">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">请求超时（秒）</label>
+                        <input type="number" class="form-control" id="aiTimeout" value="90" min="1">
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">采样温度 (0.0-2.0)</label>
+                        <input type="number" class="form-control" id="aiTemperature" value="1.0" min="0" max="2" step="0.1">
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">最大生成 token 数</label>
+                    <input type="number" class="form-control" id="aiMaxTokens" value="5000" min="0">
+                    <div class="form-text">设为 0 以禁用发送 max_tokens 参数</div>
+                </div>
+                
+                <h5 class="mt-4">AI 分析功能</h5>
+                <div class="mb-3 form-check">
+                    <input type="checkbox" class="form-check-input" id="aiAnalysisEnabled">
+                    <label class="form-check-label" for="aiAnalysisEnabled">启用 AI 分析</label>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">输出语言</label>
+                    <input type="text" class="form-control" id="aiAnalysisLanguage" value="Chinese">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">参与分析的新闻数量上限</label>
+                    <input type="number" class="form-control" id="aiAnalysisMaxNews" value="50" min="0">
+                </div>
+                <div class="mb-3 form-check">
+                    <input type="checkbox" class="form-check-input" id="aiAnalysisIncludeRss">
+                    <label class="form-check-label" for="aiAnalysisIncludeRss">包含 RSS 内容进行分析</label>
+                </div>
+                <div class="mb-3 form-check">
+                    <input type="checkbox" class="form-check-input" id="aiAnalysisIncludeRankTimeline">
+                    <label class="form-check-label" for="aiAnalysisIncludeRankTimeline">传递完整排名时间线</label>
+                </div>
+                
+                <h5 class="mt-4">AI 翻译功能</h5>
+                <div class="mb-3 form-check">
+                    <input type="checkbox" class="form-check-input" id="aiTranslationEnabled">
+                    <label class="form-check-label" for="aiTranslationEnabled">启用翻译功能</label>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">翻译目标语言</label>
+                    <input type="text" class="form-control" id="aiTranslationLanguage" value="English">
+                </div>
+            </div>
+
+            <!-- 文本文件编辑 -->
+            <div class="tab-pane fade" id="files" role="tabpanel">
+                <h4 class="section-title"><i class="fas fa-file-alt"></i> 文本文件编辑</h4>
+                
+                <div class="mb-4">
+                    <h5 class="editor-header">关键词文件 (frequency_words.txt)</h5>
+                    <div class="editor-container">
+                        <textarea class="w-100 h-100" id="frequencyWordsContent" style="border: none; resize: none;"></textarea>
+                    </div>
+                </div>
+                
+                <div class="mb-4">
+                    <h5 class="editor-header">AI 分析提示词 (ai_analysis_prompt.txt)</h5>
+                    <div class="editor-container">
+                        <textarea class="w-100 h-100" id="aiAnalysisPromptContent" style="border: none; resize: none;"></textarea>
+                    </div>
+                </div>
+                
+                <div class="mb-4">
+                    <h5 class="editor-header">AI 翻译提示词 (ai_translation_prompt.txt)</h5>
+                    <div class="editor-container">
+                        <textarea class="w-100 h-100" id="aiTranslationPromptContent" style="border: none; resize: none;"></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <button id="saveBtn" class="btn btn-success btn-lg save-btn">
+        <i class="fas fa-save"></i> 保存所有配置
+    </button>
+
+    <div id="alertPlaceholder" class="alert-fixed"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        let configData = null;
+
+        $(document).ready(function() {
+            loadConfig();
+            
+            $('#saveBtn').click(saveConfig);
+        });
+
+        function showAlert(message, type = 'success') {
+            const alertId = Date.now().toString();
+            const alertHtml = `
+                <div id="alert-${alertId}" class="alert alert-${type} alert-dismissible fade show" role="alert">
+                    ${message}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            `;
+            
+            $('#alertPlaceholder').append(alertHtml);
+            
+            setTimeout(() => {
+                $(`#alert-${alertId}`).fadeOut(500, function() {
+                    $(this).remove();
+                });
+            }, 5000);
+        }
+
+        async function loadConfig() {
+            try {
+                const response = await $.get('/api/config');
+                if (response.success) {
+                    configData = response.data;
+                    populateForm(configData);
+                    showAlert('配置加载成功', 'success');
+                } else {
+                    showAlert(`加载配置失败: ${response.error}`, 'danger');
+                }
+            } catch (error) {
+                showAlert(`加载配置时发生错误: ${error.responseText || error.message}`, 'danger');
+            }
+        }
+
+        function populateForm(data) {
+            // 基础设置
+            $('#timezone').val(data.app?.timezone || 'Asia/Shanghai');
+            $('#showVersionUpdate').prop('checked', data.app?.show_version_update || true);
+
+            // 数据源 - 热榜平台
+            $('#platformsEnabled').prop('checked', data.platforms?.enabled || true);
+            populatePlatformList(data.platforms?.sources || []);
+
+            // 数据源 - RSS
+            $('#rssEnabled').prop('checked', data.rss?.enabled || true);
+            $('#freshnessFilterEnabled').prop('checked', data.rss?.freshness_filter?.enabled || true);
+            $('#maxAgeDays').val(data.rss?.freshness_filter?.max_age_days || 3);
+            populateRssFeedsList(data.rss?.feeds || []);
+
+            // 报告模式
+            $('#reportMode').val(data.report?.mode || 'current');
+            $('#displayMode').val(data.report?.display_mode || 'keyword');
+            $('#sortByPositionFirst').prop('checked', data.report?.sort_by_position_first || false);
+            $('#rankThreshold').val(data.report?.rank_threshold || 5);
+            $('#maxNewsPerKeyword').val(data.report?.max_news_per_keyword || 0);
+
+            // 推送内容控制
+            populateRegionOrderList(data.display?.region_order || []);
+            $('#regionsHotlist').prop('checked', data.display?.regions?.hotlist || true);
+            $('#regionsNewItems').prop('checked', data.display?.regions?.new_items || true);
+            $('#regionsRss').prop('checked', data.display?.regions?.rss || true);
+            $('#regionsStandalone').prop('checked', data.display?.regions?.standalone || false);
+            $('#regionsAiAnalysis').prop('checked', data.display?.regions?.ai_analysis || true);
+            $('#standalonePlatforms').val(data.display?.standalone?.platforms?.join(',') || '');
+            $('#standaloneRssFeeds').val(data.display?.standalone?.rss_feeds?.join(',') || '');
+            $('#standaloneMaxItems').val(data.display?.standalone?.max_items || 20);
+
+            // 推送通知
+            $('#notificationEnabled').prop('checked', data.notification?.enabled || true);
+            $('#pushWindowEnabled').prop('checked', data.notification?.push_window?.enabled || false);
+            $('#pushWindowStart').val(data.notification?.push_window?.start || '20:00');
+            $('#pushWindowEnd').val(data.notification?.push_window?.end || '22:00');
+            $('#pushWindowOncePerDay').prop('checked', data.notification?.push_window?.once_per_day || true);
+            
+            // 通知渠道
+            $('#feishuWebhookUrl').val(data.notification?.channels?.feishu?.webhook_url || '');
+            $('#dingtalkWebhookUrl').val(data.notification?.channels?.dingtalk?.webhook_url || '');
+            $('#weworkWebhookUrl').val(data.notification?.channels?.wework?.webhook_url || '');
+            $('#weworkMsgType').val(data.notification?.channels?.wework?.msg_type || 'markdown');
+            $('#telegramBotToken').val(data.notification?.channels?.telegram?.bot_token || '');
+            $('#telegramChatId').val(data.notification?.channels?.telegram?.chat_id || '');
+            $('#emailFrom').val(data.notification?.channels?.email?.from || '');
+            $('#emailPassword').val(data.notification?.channels?.email?.password || '');
+            $('#emailTo').val(data.notification?.channels?.email?.to || '');
+            $('#emailSmtpServer').val(data.notification?.channels?.email?.smtp_server || '');
+            $('#emailSmtpPort').val(data.notification?.channels?.email?.smtp_port || '');
+            $('#ntfyServerUrl').val(data.notification?.channels?.ntfy?.server_url || 'https://ntfy.sh');
+            $('#ntfyTopic').val(data.notification?.channels?.ntfy?.topic || '');
+            $('#ntfyToken').val(data.notification?.channels?.ntfy?.token || '');
+            $('#barkUrl').val(data.notification?.channels?.bark?.url || '');
+            $('#slackWebhookUrl').val(data.notification?.channels?.slack?.webhook_url || '');
+            $('#genericWebhookUrl').val(data.notification?.channels?.generic_webhook?.webhook_url || '');
+            $('#genericWebhookPayloadTemplate').val(data.notification?.channels?.generic_webhook?.payload_template || '');
+
+            // 存储配置
+            $('#storageBackend').val(data.storage?.backend || 'auto');
+            $('#formatsSqlite').prop('checked', data.storage?.formats?.sqlite || true);
+            $('#formatsTxt').prop('checked', data.storage?.formats?.txt || false);
+            $('#formatsHtml').prop('checked', data.storage?.formats?.html || true);
+            $('#localDataDir').val(data.storage?.local?.data_dir || 'output');
+            $('#localRetentionDays').val(data.storage?.local?.retention_days || 0);
+            $('#remoteRetentionDays').val(data.storage?.remote?.retention_days || 0);
+            $('#remoteEndpointUrl').val(data.storage?.remote?.endpoint_url || '');
+            $('#remoteBucketName').val(data.storage?.remote?.bucket_name || '');
+            $('#remoteAccessKeyId').val(data.storage?.remote?.access_key_id || '');
+            $('#remoteSecretAccessKey').val(data.storage?.remote?.secret_access_key || '');
+            $('#remoteRegion').val(data.storage?.remote?.region || '');
+            $('#pullEnabled').prop('checked', data.storage?.pull?.enabled || false);
+            $('#pullDays').val(data.storage?.pull?.days || 7);
+
+            // AI 配置
+            $('#aiProvider').val(data.ai?.provider || 'deepseek');
+            $('#aiApiKey').val(data.ai?.api_key || '');
+            $('#aiModel').val(data.ai?.model || 'deepseek-chat');
+            $('#aiBaseUrl').val(data.ai?.base_url || '');
+            $('#aiTimeout').val(data.ai?.timeout || 90);
+            $('#aiTemperature').val(data.ai?.temperature || 1.0);
+            $('#aiMaxTokens').val(data.ai?.max_tokens || 5000);
+            
+            $('#aiAnalysisEnabled').prop('checked', data.ai_analysis?.enabled || true);
+            $('#aiAnalysisLanguage').val(data.ai_analysis?.language || 'Chinese');
+            $('#aiAnalysisMaxNews').val(data.ai_analysis?.max_news_for_analysis || 50);
+            $('#aiAnalysisIncludeRss').prop('checked', data.ai_analysis?.include_rss || false);
+            $('#aiAnalysisIncludeRankTimeline').prop('checked', data.ai_analysis?.include_rank_timeline || true);
+            
+            $('#aiTranslationEnabled').prop('checked', data.ai_translation?.enabled || false);
+            $('#aiTranslationLanguage').val(data.ai_translation?.language || 'English');
+
+            // 加载文本文件内容
+            loadTextFiles();
+        }
+
+        function populatePlatformList(platforms) {
+            const container = $('#platformList');
+            container.empty();
+            
+            platforms.forEach((platform, index) => {
+                const platformDiv = $(`
+                    <div class="card mb-3">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <span>平台 ${index + 1}: ${platform.name}</span>
+                            <button type="button" class="btn btn-sm btn-danger" onclick="removePlatform(${index})">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <label class="form-label">ID</label>
+                                <input type="text" class="form-control platform-id" value="${platform.id}" readonly>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">显示名称</label>
+                                <input type="text" class="form-control platform-name" value="${platform.name}">
+                            </div>
+                        </div>
+                    </div>
+                `);
+                container.append(platformDiv);
+            });
+        }
+
+        function populateRssFeedsList(feeds) {
+            const container = $('#rssFeedsList');
+            container.empty();
+            
+            feeds.forEach((feed, index) => {
+                const feedDiv = $(`
+                    <div class="card mb-3">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <span>RSS 源 ${index + 1}: ${feed.name}</span>
+                            <button type="button" class="btn btn-sm btn-danger" onclick="removeRssFeed(${index})">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <label class="form-label">ID</label>
+                                <input type="text" class="form-control rss-id" value="${feed.id}">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">显示名称</label>
+                                <input type="text" class="form-control rss-name" value="${feed.name}">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">URL</label>
+                                <input type="text" class="form-control rss-url" value="${feed.url}">
+                            </div>
+                            <div class="mb-3 form-check">
+                                <input type="checkbox" class="form-check-input rss-enabled" id="rssEnabled${index}" ${feed.enabled !== false ? 'checked' : ''}>
+                                <label class="form-check-label" for="rssEnabled${index}">启用</label>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">最大文章年龄（天）</label>
+                                <input type="number" class="form-control rss-max-age-days" value="${feed.max_age_days !== undefined ? feed.max_age_days : ''}" placeholder="留空使用全局设置">
+                                <div class="form-text">留空使用全局设置，0 表示禁用过滤，正整数表示只推送 N 天内的文章</div>
+                            </div>
+                        </div>
+                    </div>
+                `);
+                container.append(feedDiv);
+            });
+        }
+
+        function populateRegionOrderList(regions) {
+            const container = $('#regionOrderList');
+            container.empty();
+            
+            regions.forEach(region => {
+                let displayName = region;
+                switch(region) {
+                    case 'new_items':
+                        displayName = '新增热点区域';
+                        break;
+                    case 'hotlist':
+                        displayName = '热榜区域';
+                        break;
+                    case 'rss':
+                        displayName = 'RSS 订阅区域';
+                        break;
+                    case 'standalone':
+                        displayName = '独立展示区';
+                        break;
+                    case 'ai_analysis':
+                        displayName = 'AI 分析区域';
+                        break;
+                }
+                
+                const item = $(`
+                    <div class="list-group-item d-flex justify-content-between align-items-center">
+                        <span>${displayName}</span>
+                        <input type="hidden" class="region-value" value="${region}">
+                    </div>
+                `);
+                container.append(item);
+            });
+        }
+
+        async function loadTextFiles() {
+            try {
+                // 加载关键词文件
+                let response = await $.get('/api/frequency_words');
+                if (response.success) {
+                    $('#frequencyWordsContent').val(response.content);
+                }
+
+                // 加载AI分析提示词
+                response = await $.get('/api/ai_analysis_prompt');
+                if (response.success) {
+                    $('#aiAnalysisPromptContent').val(response.content);
+                }
+
+                // 加载AI翻译提示词
+                response = await $.get('/api/ai_translation_prompt');
+                if (response.success) {
+                    $('#aiTranslationPromptContent').val(response.content);
+                }
+            } catch (error) {
+                showAlert(`加载文本文件时发生错误: ${error.responseText || error.message}`, 'danger');
+            }
+        }
+
+        async function saveConfig() {
+            if (!configData) {
+                showAlert('配置数据未加载', 'danger');
+                return;
+            }
+
+            try {
+                // 更新基础设置
+                configData.app = {
+                    timezone: $('#timezone').val(),
+                    show_version_update: $('#showVersionUpdate').is(':checked')
+                };
+
+                // 更新热榜平台设置
+                configData.platforms = {
+                    ...configData.platforms,
+                    enabled: $('#platformsEnabled').is(':checked'),
+                    sources: []
+                };
+                
+                $('.card').each(function(index) {
+                    if ($(this).find('.platform-id').length > 0) {
+                        configData.platforms.sources.push({
+                            id: $(this).find('.platform-id').val(),
+                            name: $(this).find('.platform-name').val()
+                        });
+                    }
+                });
+
+                // 更新RSS设置
+                configData.rss = {
+                    ...configData.rss,
+                    enabled: $('#rssEnabled').is(':checked'),
+                    freshness_filter: {
+                        enabled: $('#freshnessFilterEnabled').is(':checked'),
+                        max_age_days: parseInt($('#maxAgeDays').val()) || 3
+                    },
+                    feeds: []
+                };
+                
+                $('.card').each(function(index) {
+                    if ($(this).find('.rss-id').length > 0) {
+                        const maxAgeDaysValue = $(this).find('.rss-max-age-days').val();
+                        const feedObj = {
+                            id: $(this).find('.rss-id').val(),
+                            name: $(this).find('.rss-name').val(),
+                            url: $(this).find('.rss-url').val(),
+                            enabled: $(this).find('.rss-enabled').is(':checked')
+                        };
+                        
+                        if (maxAgeDaysValue !== '') {
+                            feedObj.max_age_days = parseInt(maxAgeDaysValue);
+                        }
+                        
+                        configData.rss.feeds.push(feedObj);
+                    }
+                });
+
+                // 更新报告模式
+                configData.report = {
+                    mode: $('#reportMode').val(),
+                    display_mode: $('#displayMode').val(),
+                    sort_by_position_first: $('#sortByPositionFirst').is(':checked'),
+                    rank_threshold: parseInt($('#rankThreshold').val()) || 5,
+                    max_news_per_keyword: parseInt($('#maxNewsPerKeyword').val()) || 0
+                };
+
+                // 更新推送内容控制
+                configData.display = {
+                    ...configData.display,
+                    region_order: [],
+                    regions: {
+                        hotlist: $('#regionsHotlist').is(':checked'),
+                        new_items: $('#regionsNewItems').is(':checked'),
+                        rss: $('#regionsRss').is(':checked'),
+                        standalone: $('#regionsStandalone').is(':checked'),
+                        ai_analysis: $('#regionsAiAnalysis').is(':checked')
+                    },
+                    standalone: {
+                        platforms: $('#standalonePlatforms').val().split(',').map(s => s.trim()).filter(s => s),
+                        rss_feeds: $('#standaloneRssFeeds').val().split(',').map(s => s.trim()).filter(s => s),
+                        max_items: parseInt($('#standaloneMaxItems').val()) || 20
+                    }
+                };
+                
+                $('.region-value').each(function() {
+                    configData.display.region_order.push($(this).val());
+                });
+
+                // 更新推送通知
+                configData.notification = {
+                    ...configData.notification,
+                    enabled: $('#notificationEnabled').is(':checked'),
+                    push_window: {
+                        enabled: $('#pushWindowEnabled').is(':checked'),
+                        start: $('#pushWindowStart').val(),
+                        end: $('#pushWindowEnd').val(),
+                        once_per_day: $('#pushWindowOncePerDay').is(':checked')
+                    },
+                    channels: {
+                        feishu: {
+                            webhook_url: $('#feishuWebhookUrl').val()
+                        },
+                        dingtalk: {
+                            webhook_url: $('#dingtalkWebhookUrl').val()
+                        },
+                        wework: {
+                            webhook_url: $('#weworkWebhookUrl').val(),
+                            msg_type: $('#weworkMsgType').val()
+                        },
+                        telegram: {
+                            bot_token: $('#telegramBotToken').val(),
+                            chat_id: $('#telegramChatId').val()
+                        },
+                        email: {
+                            from: $('#emailFrom').val(),
+                            password: $('#emailPassword').val(),
+                            to: $('#emailTo').val(),
+                            smtp_server: $('#emailSmtpServer').val(),
+                            smtp_port: $('#emailSmtpPort').val()
+                        },
+                        ntfy: {
+                            server_url: $('#ntfyServerUrl').val(),
+                            topic: $('#ntfyTopic').val(),
+                            token: $('#ntfyToken').val()
+                        },
+                        bark: {
+                            url: $('#barkUrl').val()
+                        },
+                        slack: {
+                            webhook_url: $('#slackWebhookUrl').val()
+                        },
+                        generic_webhook: {
+                            webhook_url: $('#genericWebhookUrl').val(),
+                            payload_template: $('#genericWebhookPayloadTemplate').val()
+                        }
+                    }
+                };
+
+                // 更新存储配置
+                configData.storage = {
+                    backend: $('#storageBackend').val(),
+                    formats: {
+                        sqlite: $('#formatsSqlite').is(':checked'),
+                        txt: $('#formatsTxt').is(':checked'),
+                        html: $('#formatsHtml').is(':checked')
+                    },
+                    local: {
+                        data_dir: $('#localDataDir').val(),
+                        retention_days: parseInt($('#localRetentionDays').val()) || 0
+                    },
+                    remote: {
+                        retention_days: parseInt($('#remoteRetentionDays').val()) || 0,
+                        endpoint_url: $('#remoteEndpointUrl').val(),
+                        bucket_name: $('#remoteBucketName').val(),
+                        access_key_id: $('#remoteAccessKeyId').val(),
+                        secret_access_key: $('#remoteSecretAccessKey').val(),
+                        region: $('#remoteRegion').val()
+                    },
+                    pull: {
+                        enabled: $('#pullEnabled').is(':checked'),
+                        days: parseInt($('#pullDays').val()) || 7
+                    }
+                };
+
+                // 更新AI配置
+                configData.ai = {
+                    provider: $('#aiProvider').val(),
+                    api_key: $('#aiApiKey').val(),
+                    model: $('#aiModel').val(),
+                    base_url: $('#aiBaseUrl').val(),
+                    timeout: parseInt($('#aiTimeout').val()) || 90,
+                    temperature: parseFloat($('#aiTemperature').val()) || 1.0,
+                    max_tokens: parseInt($('#aiMaxTokens').val()) || 5000
+                };
+                
+                configData.ai_analysis = {
+                    enabled: $('#aiAnalysisEnabled').is(':checked'),
+                    language: $('#aiAnalysisLanguage').val(),
+                    max_news_for_analysis: parseInt($('#aiAnalysisMaxNews').val()) || 50,
+                    include_rss: $('#aiAnalysisIncludeRss').is(':checked'),
+                    include_rank_timeline: $('#aiAnalysisIncludeRankTimeline').is(':checked')
+                };
+                
+                configData.ai_translation = {
+                    enabled: $('#aiTranslationEnabled').is(':checked'),
+                    language: $('#aiTranslationLanguage').val()
+                };
+
+                // 保存主要配置
+                const saveResponse = await $.ajax({
+                    url: '/api/config',
+                    method: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({data: configData})
+                });
+
+                if (saveResponse.success) {
+                    // 保存文本文件
+                    await Promise.all([
+                        $.ajax({
+                            url: '/api/frequency_words',
+                            method: 'POST',
+                            contentType: 'application/json',
+                            data: JSON.stringify({content: $('#frequencyWordsContent').val()})
+                        }),
+                        $.ajax({
+                            url: '/api/ai_analysis_prompt',
+                            method: 'POST',
+                            contentType: 'application/json',
+                            data: JSON.stringify({content: $('#aiAnalysisPromptContent').val()})
+                        }),
+                        $.ajax({
+                            url: '/api/ai_translation_prompt',
+                            method: 'POST',
+                            contentType: 'application/json',
+                            data: JSON.stringify({content: $('#aiTranslationPromptContent').val()})
+                        })
+                    ]);
+
+                    showAlert('所有配置保存成功！', 'success');
+                } else {
+                    showAlert(`保存配置失败: ${saveResponse.error}`, 'danger');
+                }
+            } catch (error) {
+                console.error('保存配置时发生错误:', error);
+                showAlert(`保存配置时发生错误: ${error.responseText || error.message}`, 'danger');
+            }
+        }
+
+        function removePlatform(index) {
+            if (confirm('确定要删除这个平台吗？')) {
+                // 实际上我们只是隐藏元素，真正的更新将在保存时完成
+                $(`.card`).eq(index).remove();
+            }
+        }
+
+        function removeRssFeed(index) {
+            if (confirm('确定要删除这个RSS源吗？')) {
+                // 实际上我们只是隐藏元素，真正的更新将在保存时完成
+                $(`.card`).eq(index).remove();
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1895,6 +1895,74 @@ ai_translation:
 
 > **📖 提醒**：本章节提供详细的配置说明，建议先完成 [快速开始](#-快速开始) 的基础配置，再根据需要回来查看详细选项。
 
+### 配置编辑器 (Web UI)
+
+项目提供了图形化的配置编辑器，让您可以通过Web界面直观地编辑配置文件，无需手动编辑YAML文件。
+
+**启动配置编辑器：**
+
+1. **Docker方式部署（推荐用于Linux服务器）：**
+   ```bash
+   # 进入项目目录
+   cd TrendRadar
+   
+   # 启动配置编辑器
+   cd docker
+   docker-compose -f docker-compose-config-editor.yml up -d --build
+   
+   # 访问配置编辑器
+   # 浏览器打开 http://<your-server-ip>:5000
+   ```
+
+2. **使用部署脚本（Linux）：**
+   ```bash
+   # 给部署脚本添加执行权限
+   chmod +x deploy_config_editor.sh
+   
+   # 运行部署脚本
+   ./deploy_config_editor.sh
+   
+   # 选择选项 1 部署配置编辑器
+   ```
+
+3. **本地Python方式（开发调试用）：**
+   ```bash
+   # 进入配置编辑器目录
+   cd config_editor
+   
+   # 安装依赖
+   pip install -r requirements.txt
+   
+   # 启动应用
+   python app.py
+   
+   # 访问配置编辑器
+   # 浏览器打开 http://localhost:5000
+   ```
+
+**配置编辑器功能：**
+- **可视化编辑**：直观的Web界面，无需手动编辑YAML文件
+- **多配置支持**：支持编辑config.yaml、frequency_words.txt、AI提示词文件等
+- **实时保存**：修改后即时保存到对应文件
+- **安全提醒**：注意保护敏感信息，如API密钥、webhook URL等
+
+**修改配置后重启服务：**
+
+在Linux服务器上修改配置后，需要重启TrendRadar服务才能使新配置生效：
+
+```bash
+# 使用部署脚本重启
+./deploy_config_editor.sh
+# 选择选项 2 重启TrendRadar服务
+
+# 或者手动重启Docker服务
+cd docker
+docker-compose -f docker-compose-build.yml down
+docker-compose -f docker-compose-build.yml up -d
+```
+
+> 💡 **提示**：配置编辑器仅用于方便配置管理，在生产环境中使用完毕后建议停止配置编辑器服务以提高安全性。
+
 ### 1. 我要看哪些平台？
 
 <details id="自定义监控平台">

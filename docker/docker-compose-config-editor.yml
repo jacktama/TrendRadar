@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  config-editor:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile-config-editor
+    container_name: trendradar-config-editor
+    restart: unless-stopped
+    ports:
+      - "0.0.0.0:5000:5000"  # 允许外部访问配置编辑器
+    volumes:
+      - ../config:/app/config  # 挂载配置目录
+      - ../output:/app/output  # 挂载输出目录
+    environment:
+      - TZ=Asia/Shanghai
+    networks:
+      - trendradar-network
+
+networks:
+  trendradar-network:
+    driver: bridge
